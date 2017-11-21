@@ -2,6 +2,9 @@
 #If you don't have a key present beyond 1, simply enter 0 for that key, so as not to screw up the reading in of args. 
 #Input file Format: PointALat,PointALong,PointBLat,PointBLong,MinutesInFuturetoQuery
 #A space is allowed between PointALong and PointBLat after the comma. "POintALong,<SPACE>POIntBLat" is valid.
+#This script improves on last by including a total time for trip in output, which accounts for time spent waiting at your first transit stop. 
+
+
 import json, urllib
 import googlemaps
 import time
@@ -13,10 +16,6 @@ gmaps = ""
 global directions11
 directions11 = ""
 #Compile all modes to see which are to be run (ORDER: Driving,Walking,Biking,Transit)
-Types_of_Bus = ["BUS","INTERCITY_BUS","TROLLEYBUS"]
-Types_of_Rail = ["RAIL","METRO_RAIL","MONORAIL","COMMUTER_TRAIN","HEAVY_RAIL","HIGH_SPEED_TRAIN"]
-Types_of_Tram = ["TRAM"]
-Types_of_Subway = ["SUBWAY"]
 def short_or_full(directions):
   if "short_name" in directions.keys():
     return directions['short_name']
@@ -25,12 +24,14 @@ def short_or_full(directions):
 def leaving(time_to_leave):
     return (time.time()+ (int(time_to_leave)*60))
 
-
 def leaving_adjust(time_to_leave):
     return (int(time.time())+ (int(time_to_leave)*60))
 def correct_leave_time(duration,departure_epoch,leavetime):
   time1 = departure_epoch - leavetime
+  print "DURATION: " + str(duration)
+  print "TIme1:"  + str(time1)
   time2 = duration + time1
+  print "TIME2: " + str(time2)
   return time2
 def client(API_KEY_INPUT):
   global x
@@ -45,12 +46,10 @@ def client(API_KEY_INPUT):
     else:
       print "No More keys to run on. None of the keys provided worked."
       exit()
-
 def finish_line(array_size,array_index,output):
   while(array_index != array_size):
     output.write(",transit,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL")
     array_index += 1
-
 def try_except(gmaps12,address,destination,time_to_leave,output,KEYS,a):
   global gmaps
   global x
@@ -79,6 +78,27 @@ def try_except(gmaps12,address,destination,time_to_leave,output,KEYS,a):
       print "Key " + str(x-1) + " Has filled up or another error has occured. Any partial data from google can be downloaded below.<br>\n"
       finish_line(1,0,output)
       exit()
+def get_mode(count):
+  if(count == 0):
+    return "driving"
+  if(count == 1):
+    return "walking"
+  if(count == 2):
+    return "bicycling"
+  if(count == 3):
+    return "transit"
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+def get_seconds(t1,t2,Entry_count,mode_count):
+  h1, m1, s1 = t1.hour, t1.minute, t1.second
+  h2, m2, s2 = t2.hour, t2.minute, t2.second
+  t1_secs = s1 + 60 * (m1 + 60*h1)
+  t2_secs = s2 + 60 * (m2 + 60*h2)
+  return((t2_secs/Entry_count)/mode_count)
 
 def got_more_keys(KEYS,count):
   global x
@@ -123,11 +143,12 @@ for key in KEYS:
 address = ""
 traffic_models_list = []
 destination = ""
+#print "<br>LINE COUNT: " + str(file_len(str(sys.argv[1])))
 
 counter=0
 y=0
 client(API_KEY_INPUT)
-header = ("t1time," + "t1dist," + "t1steps,t2time," + "t2dist," + "t2steps,t3time," + "t3dist,t3steps")
+header = ("tt1time,t1time," + "t1dist," + "t1steps,tt2time,t2time," + "t2dist," + "t2steps,tt3time,t3time," + "t3dist,t3steps,")
 output.write("Slat,Slong,Dlat,Dlong,time," + header)
 output.write("\n")
 
@@ -153,17 +174,27 @@ for line in inputfile:
   try_except(gmaps,address,destination,time_to_leave,output,KEYS,1)
   
   for route in directions11:
+    total_time = [0]    
+    timelist = [0]
+    Wait_total = [0]
     stepmsg = ""
     if(i<3):
           for step in route['legs'][0]['steps']:
+            total_time[0] += step['duration']['value']
             if step['travel_mode'] != "TRANSIT":
+              timelist[0] += step['duration']['value']
               stepmsg += "(" + step['travel_mode'][0] + "|Dist:" + str(step['distance']['value']) + " meters" + "|Dur:" + str(step['duration']['value']) + " seconds)"
             else:  #If transit of some kind
               stepmsg += "(" + step['travel_mode'][0] + "|Dist:" + str(step['distance']['value']) + " meters|Dur:" + str(step['duration']['value']) + " seconds|" + "[Transit_Type:" +  step['transit_details']['line']['vehicle']['type'] + "|Leaves:" + step['transit_details']['departure_time']['text'] + "|Arrives:" + step['transit_details']['arrival_time']['text'] + "|Name:" + short_or_full(step['transit_details']['line']) + "|Total_Stops:" +  str(step['transit_details']['num_stops']) + "])"
             if route['legs'][0]['steps'].index(step) != len(route['legs'][0]['steps'])-1:
               stepmsg += "_NEXT_"
+          check = int(correct_leave_time(directions11[i]['legs'][0]['duration']['value'],directions11[i]['legs'][0]['departure_time']['value'],leaving_adjust(time_to_leave)))
+          print "ROUTE TOTAL: " + str(total_time[0])
+          #actual total time for route
           output.write(",")
-          output.write(str(correct_leave_time(directions11[i]['legs'][0]['duration']['value'],directions11[i]['legs'][0]['departure_time']['value'],leaving_adjust(time_to_leave))))
+          output.write(str(correct_leave_time(total_time[0],directions11[i]['legs'][0]['departure_time']['value'],leaving_adjust(time_to_leave))))
+          output.write(",")
+          output.write(str(total_time[0]))
           output.write(",")
           output.write(str(directions11[i]['legs'][0]['distance']['value']) + ",")
           output.write(stepmsg)
