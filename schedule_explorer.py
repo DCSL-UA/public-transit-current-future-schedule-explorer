@@ -1,4 +1,4 @@
-#Usage, "Python schedule_explorer.py <INputFile> <OutputFileName> -off <FirstAPIKey> <SecondAPIKey> <ThirdAPIKey> <FourthAPIKey> <FifthAPIKey> <FirstPrefofTravel> <SecondPrefofTravel> <ThirdPref> <Fourthpref> <FifthPref>"
+#Usage, "Python schedule_explorer.py <INputFile> <OutputFileName> -off <FirstAPIKey> <SecondAPIKey> <ThirdAPIKey> <FourthAPIKey> <FifthAPIKey> <FirstPrefofTravel> <SecondPrefofTravel> <ThirdPref> <Fourthpref> "
 #If you don't have preferences set at all or beyond 1 preference, simply enter 0 for that argument. Possible preferences can be found on Google Directions API webpage. Rail gets converted to train|tram|subway, as is stated on google's API. If you don't specify rail, simply enter, in your preferred order, tram, Train, SUbway. Any of these can be excluded or included in any order. But if you enter rail, you cannot enter any of train, tram, or subway.
 #If you don't have a key present beyond 1, simply enter 0 for that key, so as not to screw up the reading in of args. 
 #Input file Format: PointALat,PointALong,PointBLat,PointBLong,MinutesInFuturetoQuery
