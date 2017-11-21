@@ -20,10 +20,10 @@ The HTML Interface saves all the output files using the current time and date so
 
 The python script has the same header for each file, it is as follows: 
 ```Slat,Slong,Dlat,Dlong,time,tt1time,t1time,t1dist,t1steps,Bus_AbsTime,Bus_%Time,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt2time,t2time,t2dist,t2steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt3time,t3time,t3dist,t3steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time```
-Slat = Point A latitude
-Slong = Point A longitude
-Dlat = Point B latitude
-Dlong = Point B longitude
+Slat = Point A latitude<br />
+Slong = Point A longitude<br />
+Dlat = Point B latitude<br />
+Dlong = Point B longitude<br />
 time = Time that the query for this was sent to google's API (If we were provided a "Minutes_in_Future" of "1", then the time here will be 1 minute in the future of the current time that this execution was performed)
 tt1time = Total travel time, including time spent waiting for a form of transit
 t1time = Time that google says this trip will take for Route 1 of potentially 3 (in seconds), not including wait time
