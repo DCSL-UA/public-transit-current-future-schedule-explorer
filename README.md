@@ -1,7 +1,7 @@
 # Google_DirectionsAPI_DataExport
 An intuitive interface for interacting with and pulling valuable transit data from Google's Direction API.
 # Idea
-This repository contains an HTML web interface used to interact with a python script that queries the Google Directions API for directions going from Point A to Point B using strictly public transportation (transit). The exact specifications of this script are in line with those outlined on the [Directions API Developer's Guide] (https://developers.google.com/maps/documentation/directions/intro "Directions API Developer's Guide")
+This repository contains an HTML web interface used to interact with a python script that queries the Google Directions API for directions going from Point A to Point B using strictly public transportation (transit). The exact specifications of this script are in line with those outlined on the [Directions API Developer's Guide](https://developers.google.com/maps/documentation/directions/intro "Directions API Developer's Guide")
 
 The python script itself can be executed alone, using the parameter options outlined in the comments of the file, but the HTML web interface ensures that no silly errors are done, and also ensures a number of conditions are met. 
 
