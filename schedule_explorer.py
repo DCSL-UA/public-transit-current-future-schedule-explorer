@@ -1,4 +1,5 @@
-#Usage, "Python schedule_explorer.py <INputFile> <OutputFileName> -off <FirstAPIKey> <SecondAPIKey> <ThirdAPIKey> <FourthAPIKey> <FifthAPIKey>"
+#Usage, "Python schedule_explorer.py <INputFile> <OutputFileName> -off <FirstAPIKey> <SecondAPIKey> <ThirdAPIKey> <FourthAPIKey> <FifthAPIKey> <FirstPrefofTravel> <SecondPrefofTravel> <ThirdPref> <Fourthpref> <FifthPref>"
+#If you don't have preferences set at all or beyond 1 preference, simply enter 0 for that argument. Possible preferences can be found on Google Directions API webpage. Rail gets converted to train|tram|subway, as is stated on google's API. If you don't specify rail, simply enter, in your preferred order, tram, Train, SUbway. Any of these can be excluded or included in any order. But if you enter rail, you cannot enter any of train, tram, or subway.
 #If you don't have a key present beyond 1, simply enter 0 for that key, so as not to screw up the reading in of args. 
 #Input file Format: PointALat,PointALong,PointBLat,PointBLong,MinutesInFuturetoQuery
 #A space is allowed between PointALong and PointBLat after the comma. "POintALong,<SPACE>POIntBLat" is valid.
@@ -99,25 +100,35 @@ def client(API_KEY_INPUT):
     else:
       print "No More keys to run on. None of the keys provided worked."
       exit()
-
 def finish_line(array_size,array_index,output):
   while(array_index != array_size):
     output.write(",transit,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL")
     array_index += 1
-
-def try_except(gmaps12,address,destination,time_to_leave,output,KEYS,a):
+def format_orderlist(list):
+  message = ""
+  for item in list:
+    if item.lower() == "rail":
+      message += "train|tram|subway"
+    else:
+      if item != "0":
+        message += item.lower()
+    if list.index(item) != len(list)-1:
+      if list[list.index(item)+1] != "0":
+        message += "|"
+  return message
+def try_except(gmaps12,address,destination,time_to_leave,output,KEYS,a,Order_list):
   global gmaps
   global x
   try:
     global directions11
-    directions11 = gmaps.directions(address,destination,departure_time=leaving(time_to_leave),mode='transit',units="metric",alternatives="true")
+    directions11 = gmaps.directions(address,destination,departure_time=leaving(time_to_leave),mode='transit',units="metric",transit_mode=Order_list,alternatives="true")
   except googlemaps.exceptions.ApiError as e:
     print e
     x += 1
     print "Key " + str(x-2) + " Has filled up or another error has occured.<br>\n"
     if(got_more_keys(KEYS,x) != False):
       client(got_more_keys(KEYS,x))
-      try_except(gmaps,address,destination,time_to_leave,output,KEYS,a)
+      try_except(gmaps,address,destination,time_to_leave,output,KEYS,a,Order_list)
     else:
       print "Key Has filled up or another error has occured. Any partial data from google can be downloaded below.<br>\n"
       finish_line(1,0,output)
@@ -128,7 +139,7 @@ def try_except(gmaps12,address,destination,time_to_leave,output,KEYS,a):
     print "Key " + str(x-2) + " Has filled up or another error has occured.<br>\n"
     if(got_more_keys(KEYS,x) != False):
       client(got_more_keys(KEYS,x))
-      try_except(gmaps,address,destination,time_to_leave,output,KEYS,a)
+      try_except(gmaps,address,destination,time_to_leave,output,KEYS,a,Order_list)
     else:
       print "Key " + str(x-1) + " Has filled up or another error has occured. Any partial data from google can be downloaded below.<br>\n"
       finish_line(1,0,output)
@@ -187,6 +198,7 @@ KEY2 = sys.argv[5]
 KEY3 = sys.argv[6]
 KEY4 = sys.argv[7]
 KEY5 = sys.argv[8]
+Order_list = [sys.argv[9],sys.argv[10],sys.argv[11],sys.argv[12]]
 
 key_count = 0
 KEYS=[API_KEY_INPUT,KEY2,KEY3,KEY4,KEY5]
@@ -206,7 +218,7 @@ client(API_KEY_INPUT)
 header = ("tt1time,t1time," + "t1dist," + "t1steps,Bus_AbsTime,Bus_%Time,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt2time,t2time," + "t2dist," + "t2steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt3time,t3time," + "t3dist,t3steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,")
 output.write("Slat,Slong,Dlat,Dlong,time," + header)
 output.write("\n")
-
+formated_list = format_orderlist(Order_list)
 for line in inputfile:
   i=0
   counter += 1
@@ -226,7 +238,7 @@ for line in inputfile:
   output.write(address+","+destination+",")
   output.write(time.strftime('%H:%M:%S', time.localtime(leaving(time_to_leave))))
   iterate_counter=0
-  try_except(gmaps,address,destination,time_to_leave,output,KEYS,1)
+  try_except(gmaps,address,destination,time_to_leave,output,KEYS,1,formated_list)
   
   for route in directions11:
     Bus_totals = [0,0]
