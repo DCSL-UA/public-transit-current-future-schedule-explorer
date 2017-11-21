@@ -19,20 +19,20 @@ The Google Directions API allows you to query for times in the future. In the ca
 The HTML Interface saves all the output files using the current time and date so as not to repeat any filenames, overwriting old data or causing file errors, and to ensure that it is easy to match up corresponding input and output files. The time the input file was uploaded will match the name of the output file. 
 
 The python script has the same header for each file, it is as follows: 
-```Slat,Slong,Dlat,Dlong,time,tt1time,t1time,t1dist,t1steps,Bus_AbsTime,Bus_%Time,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt2time,t2time,t2dist,t2steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt3time,t3time,t3dist,t3steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time```
+```Slat,Slong,Dlat,Dlong,time,tt1time,t1time,t1dist,t1steps,Bus_AbsTime,Bus_%Time,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt2time,t2time,t2dist,t2steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time,tt3time,t3time,t3dist,t3steps,Bus_AbsTime,Bus_%TIme,Sub_AbsTime,Sub%Time,Tr_AbsTime,Tr_%Time,Tram_AbsTime,Tram_%Time,Walk_AbsTime,Walk_%Time,Wait_AbsTime,Wait_%Time```<br />
 Slat = Point A latitude<br />
 Slong = Point A longitude<br />
 Dlat = Point B latitude<br />
 Dlong = Point B longitude<br />
-time = Time that the query for this was sent to google's API (If we were provided a "Minutes_in_Future" of "1", then the time here will be 1 minute in the future of the current time that this execution was performed)
-tt1time = Total travel time, including time spent waiting for a form of transit
-t1time = Time that google says this trip will take for Route 1 of potentially 3 (in seconds), not including wait time
-t1dist = Distance in meters for route 1 of potentially 3.
-t1steps = Steps for traveling Point A to Point B according to google, includes exact transit information and time spent on each step. Varys greatly, format is explained below.
-Bus_AbsTime = Absolute number of seconds spent on a bus
-Bus_%Time = % Time spent on bus relative to total trip time including wait time. 
-This format follows for each possible type of travel, all the way through wait time and wait %.
-Obviously t2* and t3* is the same as above for Routes 2 and 3, including the breakdown of each travel type.
+time = Time that the query for this was sent to google's API (If we were provided a "Minutes_in_Future" of "1", then the time here will be 1 minute in the future of the current time that this execution was performed)<br />
+tt1time = Total travel time, including time spent waiting for a form of transit<br />
+t1time = Time that google says this trip will take for Route 1 of potentially 3 (in seconds), not including wait time<br />
+t1dist = Distance in meters for route 1 of potentially 3.<br />
+t1steps = Steps for traveling Point A to Point B according to google, includes exact transit information and time spent on each step. Varys greatly, format is explained below.<br />
+Bus_AbsTime = Absolute number of seconds spent on a bus<br />
+Bus_%Time = % Time spent on bus relative to total trip time including wait time. <br />
+This format follows for each possible type of travel, all the way through wait time and wait %.<br />
+Obviously t2* and t3* is the same as above for Routes 2 and 3, including the breakdown of each travel type.<br />
 
 ### Explanation of Multiple Routes
 For any given point A and point B there is potentially 4 routes that google sends back (Can be obtained by using parameter `alternatives="True"` as shown in Developer's Guide. We are returning at most 3 of those routes. However, there does not always have to be 3 routes, there does not always have to be even 1 route (I.e bad input or maybe the two points don't have roads that connect them according to google). In the case that there is less than 3 routes, the python script dynamically fills the remaining space with `NULL` values. 
