@@ -123,7 +123,7 @@ Based on the number of modes selected and number of location pairs in your file,
 <?php
 }
 
-
+date_default_timezone_set("America/Chicago");
 
     $_SESSION['Got_key_count'] = 0;
     $_SESSION['time_stretch'] = 0;
@@ -271,13 +271,20 @@ $Filler4 = $_SESSION['Filler4'];
 $Filler5 = $_SESSION['Filler5'];
 $first = $_SESSION['first'];
 $second = $_SESSION['second'];
+$linecount = $_SESSION['linecount'];
 $third = $_SESSION['third'];
 $fourth = $_SESSION['fourth'];
+$my_file = 'gmaps_transit_log.txt';
+$handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
+$data = "\n|| NEW Query: OutputFilename: $name. Input Filename: $filename. InputFileLength: $linecount. Keys Provided: $API_KEYs1, $Filler2, $Filler3, $Filler4, $Filler5. Preferences: $first, $second, $third, $fourth. ";
+fwrite($handle, $data);
 
 #print "INVOKE";
-passthru("python real_schedule_explorer.py uploads_transit/$filename output_transit/$name -off $API_KEYs1 $Filler2 $Filler3 $Filler4 $Filler5 $first $second $third $fourth 2>&1",$return_var );
+$string = 'python real_schedule_explorer.py "uploads_transit' . "\\" . "$filename" . '"' . " output_transit" . '\\' . "$name -off $API_KEYs1 $Filler2 $Filler3 $Filler4 $Filler5 $first $second $third $fourth 2>&1";
+
+passthru($string);
 #echo "python gmaps_standard.py uploads/$_SESSION['filename output/_$_SESSION['name -off $_SESSION['API_KEYs1 $_SESSION['Filler2 $_SESSION['Filler3 $_SESSION['Filler4 $_SESSION['Filler5 2>&1";
-#print "python real_schedule_explorer.py uploads/$filename output/$name -off $API_KEYs1 $Filler2 $Filler3 $Filler4 $Filler5 $first $second $third $fourth 2>&1";
+#print "python real_schedule_explorer.py uploads_transit/$filename output_transit/$name -off $API_KEYs1 $Filler2 $Filler3 $Filler4 $Filler5 $first $second $third $fourth 2>&1";
 
  #if ($_SESSION['return_var==0) {
       echo "File is valid, and was successfully uploaded.\n";
