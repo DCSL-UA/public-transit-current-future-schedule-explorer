@@ -198,66 +198,7 @@ $handle = fopen($_SESSION['uploadfile'], "r");
   $_SESSION['linecount'] += 1;
 }
 fclose($handle);
-if($_SESSION['Filler2'] == "0" and $_SESSION['Got_key_count'] == 0){
-    if($_SESSION['linecount'] > 2500){
-        $_SESSION['Got_key_count'] = 1;
-        $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-        move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
-        html_form();
-        exit;
-    }
-}
-if($_SESSION['Filler3'] == "0"){
-    if( $_SESSION['linecount'] > 5000){
-        $_SESSION['Got_key_count'] = 1;
-        $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-        move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
-
-        html_form();
-        exit;
-    }
-}
-if($_SESSION['Filler4'] == "0" and $_SESSION['Got_key_count'] == 0){
-    if($_SESSION['linecount'] > 7500){
-        $_SESSION['Got_key_count'] = 1;
-        $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-        move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
-
-        html_form();
-        exit;
-    }
-}
-if($_SESSION['Filler5'] == "0" and $_SESSION['Got_key_count'] == 0){
-    if($_SESSION['linecount'] > 10000){
-        $_SESSION['Got_key_count'] = 1;
-        $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-        move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
-
-        html_form();
-        exit;
-    }
-}
-if($_SESSION['Filler5'] != "0" and $_SESSION['Got_key_count'] == 0){
-    if($_SESSION['linecount'] > 12500){
-        $_SESSION['Got_key_count'] = 1;
-        $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-        move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
-
-        html_form();
-        exit;
-    }
-}
-else{
 $_SESSION['original'] = $_FILES['userfile']['name'];
 $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
 
@@ -294,7 +235,7 @@ passthru($string);
 #if($_SESSION['return_var==0){
     ?><html><body><a href="output_transit/<?php echo $_SESSION['name'];?>" download="<?php echo $_SESSION['name'];?>">Download The Summary File Here</a>
 </body><?php
-}
+
 
 #}
 #else{
