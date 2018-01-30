@@ -125,19 +125,7 @@ Based on the number of modes selected and number of location pairs in your file,
 
 date_default_timezone_set("America/Chicago");
 
-    $_SESSION['Got_key_count'] = 0;
-    $_SESSION['time_stretch'] = 0;
-    
-    $_SESSION['API_KEYs1'] = $_POST['API_KEY1'];
-    $_SESSION['API_KEYs2'] = $_POST['API_KEY2'];
-    $_SESSION['API_KEYs3'] = $_POST['API_KEY3'];
-    $_SESSION['API_KEYs4'] = $_POST['API_KEY4'];
-    $_SESSION['API_KEYs5'] = $_POST['API_KEY5'];
-       
-$_SESSION['first'] = $_POST['first'];
-$_SESSION['second'] = $_POST['second'];
-$_SESSION['third'] = $_POST['third'];
-$_SESSION['fourth'] = $_POST['fourth'];
+ 
    #print "MODES:";
    #   print $_SESSION['Mode1'];   
     #  print $_SESSION['Mode2'];
@@ -157,39 +145,35 @@ if($_SESSION['API_KEYs2']==""){
 $_SESSION['Filler2'] = "0";
 }
 else{
-    $_SESSION['Filler2'] = $_POST['API_KEY2'];
+    $_SESSION['Filler2'] = $_SESSION['API_KEYs2'];
 }
 if($_SESSION['API_KEYs3']==""){
 $_SESSION['Filler3'] = "0";
 }
 else{
-    $_SESSION['Filler3'] = $_POST['API_KEY3'];
+    $_SESSION['Filler3'] = $_SESSION['API_KEYs3'];
 }
 if($_SESSION['API_KEYs4']==""){
 $_SESSION['Filler4'] = "0";
 }
 else{
-    $_SESSION['Filler4'] = $_POST['API_KEY4'];
+    $_SESSION['Filler4'] = $_SESSION['API_KEYs4'];
 }
 if($_SESSION['API_KEYs5']==""){
 $_SESSION['Filler5'] = "0";
 }
 else{
-    $_SESSION['Filler5'] = $_POST['API_KEY5'];
+    $_SESSION['Filler5'] = $_SESSION['API_KEYs5'];
 }
    # $_SESSION['uploaddir'] = __DIR__;
-if($_FILES['userfile']['name'] == ""){
-    echo "No File was provided. Please try again.";
-    exit;
-}
-    $_SESSION['uploadfile'] =  __DIR__ . '/uploads_transit/' . basename($_FILES['userfile']['name']);
-    $filename = $_FILES['userfile']['name'];
+
+ $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
+move_uploaded_file($_SESSION['temp'], $_SESSION['uploadfile']);
+$name = $_SESSION['name'];
+$filename = $_SESSION['original'];
   
 $_SESSION['linecount'] = 0;
-$_SESSION['original'] = $_FILES['userfile']['name'];
-$_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-$_SESSION['name']='out_'.date('m-d_hia').'.csv';
-move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
+
 
 $handle = fopen($_SESSION['uploadfile'], "r");
 
@@ -197,13 +181,11 @@ $handle = fopen($_SESSION['uploadfile'], "r");
   $_SESSION['line'] = fgets($handle);
   $_SESSION['linecount'] += 1;
 }
-fclose($handle);
 
-$_SESSION['original'] = $_FILES['userfile']['name'];
-$_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
 
- $_SESSION['name']='out_'.date('m-d_hia').'.csv';
-move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
+
+
+move_uploaded_file($_SESSION['temp'], $_SESSION['uploadfile']);
 $name = $_SESSION['name'];
 $API_KEYs1 = $_SESSION['API_KEYs1'];
 $Filler2 = $_SESSION['Filler2'];
@@ -216,8 +198,10 @@ $linecount = $_SESSION['linecount'];
 $third = $_SESSION['third'];
 $fourth = $_SESSION['fourth'];
 $my_file = 'gmaps_transit_log.txt';
+$ipaddress = $_SERVER['REMOTE_ADDR'];
+
 $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
-$data = "\n|| NEW Query: OutputFilename: $name. Input Filename: $filename. InputFileLength: $linecount. Keys Provided: $API_KEYs1, $Filler2, $Filler3, $Filler4, $Filler5. Preferences: $first, $second, $third, $fourth. ";
+$data = "\n|| Sent to backup script. IPAddress: $ipaddress NEW Query: OutputFilename: $name. Input Filename: $filename. InputFileLength: $linecount. Keys Provided: $API_KEYs1, $Filler2, $Filler3, $Filler4, $Filler5. Preferences: $first, $second, $third, $fourth. ";
 fwrite($handle, $data);
 
 #print "INVOKE";

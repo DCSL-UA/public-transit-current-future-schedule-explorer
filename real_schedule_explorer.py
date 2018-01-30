@@ -182,7 +182,7 @@ def check_timetoleave(line):
   if(len(line) > 4):
     return line[4]
   else:
-    print "ELSE"
+ #   print "ELSE"
     return "0"
 
 def get_departuretime(directions):
@@ -250,7 +250,7 @@ for line in inputfile:
         exit()
       API_KEY_INPUT = KEYS[x]
       x+=1
-
+ # print "LINE WAS: " + str(line.strip().split(","))
   address = line.strip().split(",")[0]+ ","+line.strip().split(",")[1]
   time_to_leave = check_timetoleave(line.strip().split(","))
   destination = check_dest_space(line)
@@ -310,5 +310,6 @@ for line in inputfile:
     i+=1
   output.write("\n")
   
-
+output.close()
+inputfile.close()
 

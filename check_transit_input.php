@@ -188,7 +188,7 @@ if($_FILES['userfile']['name'] == ""){
 $_SESSION['linecount'] = 0;
 $_SESSION['original'] = $_FILES['userfile']['name'];
 $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-$_SESSION['name']='out_'.date('m-d_hia').'.csv';
+$_SESSION['name']='out_'.date('m-d_hisa').'.csv';
 move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
 $handle = fopen($_SESSION['uploadfile'], "r");
@@ -203,7 +203,7 @@ if($_SESSION['Filler2'] == "0" and $_SESSION['Got_key_count'] == 0){
         $_SESSION['Got_key_count'] = 1;
         $_SESSION['original'] = $_FILES['userfile']['name'];
         $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+        $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
         move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
         html_form();
@@ -215,7 +215,7 @@ if($_SESSION['Filler3'] == "0"){
         $_SESSION['Got_key_count'] = 1;
         $_SESSION['original'] = $_FILES['userfile']['name'];
         $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+        $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
         move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
         html_form();
@@ -226,7 +226,7 @@ if($_SESSION['Filler4'] == "0" and $_SESSION['Got_key_count'] == 0){
     if($_SESSION['linecount'] > 7500){
         $_SESSION['Got_key_count'] = 1;
         $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+        $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
         move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
         html_form();
@@ -238,7 +238,7 @@ if($_SESSION['Filler5'] == "0" and $_SESSION['Got_key_count'] == 0){
         $_SESSION['Got_key_count'] = 1;
         $_SESSION['original'] = $_FILES['userfile']['name'];
         $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+        $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
         move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
         html_form();
@@ -250,7 +250,7 @@ if($_SESSION['Filler5'] != "0" and $_SESSION['Got_key_count'] == 0){
         $_SESSION['Got_key_count'] = 1;
         $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
         $_SESSION['original'] = $_FILES['userfile']['name'];
-        $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+        $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
         move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 
         html_form();
@@ -261,7 +261,7 @@ else{
 $_SESSION['original'] = $_FILES['userfile']['name'];
 $_SESSION['temp'] = $_FILES['userfile']['tmp_name'];
 
- $_SESSION['name']='out_'.date('m-d_hia').'.csv';
+ $_SESSION['name']='out_'.date('m-d_hisa').'.csv';
 move_uploaded_file($_FILES['userfile']['tmp_name'], $_SESSION['uploadfile']);
 $name = $_SESSION['name'];
 $API_KEYs1 = $_SESSION['API_KEYs1'];
@@ -275,8 +275,9 @@ $linecount = $_SESSION['linecount'];
 $third = $_SESSION['third'];
 $fourth = $_SESSION['fourth'];
 $my_file = 'gmaps_transit_log.txt';
+$ipaddress = $_SERVER['REMOTE_ADDR'];
 $handle = fopen($my_file, 'a') or die('Cannot open file:  '.$my_file);
-$data = "\n|| NEW Query: OutputFilename: $name. Input Filename: $filename. InputFileLength: $linecount. Keys Provided: $API_KEYs1, $Filler2, $Filler3, $Filler4, $Filler5. Preferences: $first, $second, $third, $fourth. ";
+$data = "\n|| IPAddress: $ipaddress NEW Query: OutputFilename: $name. Input Filename: $filename. InputFileLength: $linecount. Keys Provided: $API_KEYs1, $Filler2, $Filler3, $Filler4, $Filler5. Preferences: $first, $second, $third, $fourth. ";
 fwrite($handle, $data);
 
 #print "INVOKE";
