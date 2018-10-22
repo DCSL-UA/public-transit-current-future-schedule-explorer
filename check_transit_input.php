@@ -292,10 +292,18 @@ passthru($string);
     #   echo "Something went wrong. See error above.\n\n\n\n\n";
    # }
      echo"<br><br><br><br>";
+     $_SESSION['name'] = substr($_SESSION['name'], 0, -4);
 #if($_SESSION['return_var==0){
-    ?><html><body><a href="output_transit/<?php echo $_SESSION['name'];?>" download="<?php echo $_SESSION['name'];?>">Download The Summary File Here</a>
+    ?><html><body>
+    <a href="output_transit/<?php echo $_SESSION['name'];?>.csv" download="<?php echo $_SESSION['name'];?>.csv">Download The Summary File Here</a>
+<br><br>  
+
+    <a href="output_transit/<?php echo $_SESSION['name'];?>step_by_step.csv" download="<?php echo $_SESSION['name'];?>step_by_step.csv">Download The Step by Step File Here</a>
+
+
 </body><?php
 }
+session_destroy();
 
 #}
 #else{

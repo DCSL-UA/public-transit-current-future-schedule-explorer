@@ -205,6 +205,8 @@ if (sys.argv[1]=="-help"):
    exit(-1)
 
 output = open(sys.argv[2],"w")
+output_stepbystep = open( sys.argv[2][:-4] + "step_by_step.csv","w")
+output_stepbystep.write("Trip,Option,Step,Mode,Tstart,Tend,Duration (Seconds) ,Distance (Meters),Details,Stops,\n")
 #print sys.argv[1]
 inputfile = open(sys.argv[1],"r")
 #Path to output file created
@@ -259,7 +261,6 @@ for line in inputfile:
   output.write(time.strftime('%H:%M:%S', time.localtime(query_time)))
   iterate_counter=0
   try_except(gmaps,address,destination,time_to_leave,output,KEYS,1,formated_list)
-  
   for route in directions11:
   #  print "NEW ROUTE<br><br>"
     Bus_totals = [0,0]
@@ -271,14 +272,19 @@ for line in inputfile:
     total_dist = [0]
     total_time = [0]    
     timelist = [0]
-
+    wait_step_count = 0
     stepmsg = ""
     if(i<3):
       #    print "Route started at " + str(query_time)
       #    print "ARRIVAL : " + str(route['legs'][0]['arrival_time']['value'])
           for step in route['legs'][0]['steps']:
+            if (route['legs'][0]['steps'].index(step) != 0):
+              output_stepbystep.write("\n")
             if step['travel_mode'] != "TRANSIT":
        #       print "Current steps make the time " + str(timelist[0])
+              output_stepbystep.write(str(counter) + "," + str(i+1) + "," + str(route['legs'][0]['steps'].index(step) + 1 + wait_step_count) + "," + str(step['travel_mode']))
+              output_stepbystep.write("," + time.strftime('%H:%M:%S', time.localtime(query_time+ int(timelist[0]))) + "," + time.strftime('%H:%M:%S', time.localtime((query_time +timelist[0] + int(step['duration']['value'])))))
+              output_stepbystep.write("," + str(step['duration']['value']) + "," + str(step['distance']['value']))
               Walk_totals[0] += step['duration']['value']
               total_dist[0] += step['distance']['value']
               timelist[0] += step['duration']['value']
@@ -287,12 +293,26 @@ for line in inputfile:
             else:  #If transit of some kind
        #       print "Transit"
         #      print "Current steps make the time " + str(timelist[0])
-
-              Wait_total[0] += int(get_waittime(step,query_time,timelist,Wait_total))
+              
+              if int(get_waittime(step,query_time,timelist,Wait_total)) > 0:
+                output_stepbystep.write(str(counter) + "," + str(i+1) + "," + str(route['legs'][0]['steps'].index(step) + 1) + ",")
+                output_stepbystep.write("Wait" + ",")
+                output_stepbystep.write(time.strftime('%H:%M:%S', time.localtime((query_time + int(timelist[0])))) + "," + time.strftime('%H:%M:%S', time.localtime((query_time + timelist[0]+ int(get_waittime(step,query_time,timelist,Wait_total))))))
+                output_stepbystep.write("," + str((query_time + timelist[0] + int(get_waittime(step,query_time,timelist,Wait_total))) - (query_time + int(timelist[0]))) + "\n")
+                wait_step_count += 1
+                Wait_total[0] += int(get_waittime(step,query_time,timelist,Wait_total))
+                timelist[0] += int(get_waittime(step,query_time,timelist,Wait_total))
+              output_stepbystep.write(str(counter) + "," + str(i+1) + "," + str(route['legs'][0]['steps'].index(step) + 1 + wait_step_count) + ",")
+              output_stepbystep.write(str(step['travel_mode']) + ",")
+              output_stepbystep.write(time.strftime('%H:%M:%S', time.localtime((query_time + int(timelist[0])))) + "," + time.strftime('%H:%M:%S', time.localtime((query_time + timelist[0]+ step['duration']['value']))))
+              output_stepbystep.write("," + str(step['duration']['value']) + "," + str(step['distance']['value']))
+              output_stepbystep.write("," + str(step['transit_details']['line']['vehicle']['type']) + " " + short_or_full(step['transit_details']['line']))
+              output_stepbystep.write("," + str(step['transit_details']['num_stops']))
               adjust_totals(timelist,total_dist,Bus_totals,Sub_totals,Train_totals,Tram_totals,Walk_totals,step)
               stepmsg += "(" + step['travel_mode'][0] + "|Dist:" + str(step['distance']['value']) + " meters|Dur:" + str(step['duration']['value']) + " seconds|" + "[Transit_Type:" +  step['transit_details']['line']['vehicle']['type'] + "|Leaves:" + step['transit_details']['departure_time']['text'] + "|Arrives:" + step['transit_details']['arrival_time']['text'] + "|Name:" + short_or_full(step['transit_details']['line']) + "|Total_Stops:" +  str(step['transit_details']['num_stops']) + "])"
             if route['legs'][0]['steps'].index(step) != len(route['legs'][0]['steps'])-1:
               stepmsg += "_NEXT_"
+          output_stepbystep.write("\n")
           total_time[0] = int(correct_leave_time(directions11[i]['legs'][0]['duration']['value'],get_departuretime(directions11[i]['legs'][0]),leaving_adjust(time_to_leave)))
           output.write(",")
           output.write(str(int(timelist[0] + Wait_total[0])))
